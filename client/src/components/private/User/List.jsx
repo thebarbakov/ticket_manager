@@ -11,7 +11,6 @@ export default function List() {
   });
   const [data, setData] = useState([]);
   const [totalDocs, setTotalDocs] = useState(1);
-  setTotalDocs(totalDocs);
 
   const appl = useContext(ApplContext);
 
