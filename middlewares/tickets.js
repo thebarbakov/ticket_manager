@@ -16,7 +16,7 @@ const checkTicket = async (req, res, next) => {
     if (ticket_manager_user) {
       const { user_id } = jwt.verify(ticket_manager_user, JWT_SECRET);
       const user = await User.findOne({ _id: user_id });
-      if (req?.user?.access?.orders === true) return next();
+      if (user?.access?.orders === true) return next();
     } else if (ticket_manager_agent) {
       const { agent_id } = jwt.verify(ticket_manager_agent, JWT_SECRET);
       const agent = await Agent.findOne({ _id: agent_id });
