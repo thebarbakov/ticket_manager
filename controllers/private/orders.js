@@ -109,7 +109,7 @@ const getOrders = async (req, res, next) => {
       .sort({
         [req.query.sort_by ? req.query.sort_by : "_id"]: req.query.sort_dir
           ? req.query.sort_dir
-          : 1,
+          : -1,
       })
       .limit(req.query.s ? req.query.s : 10)
       .skip(
