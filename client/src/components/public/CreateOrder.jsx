@@ -56,7 +56,7 @@ export default function CreateOrder({
     }
     setValidated(true);
     event.preventDefault();
-    if (agentContext) {
+    if (agentContext && !agentContext?.no_agent) {
       const editor = {};
       Object.keys(agent).forEach((field) => {
         if (agent[field] !== agentContext[field]) editor[field] = agent[field];
