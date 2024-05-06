@@ -13,7 +13,9 @@ const checkTicket = async (req, res, next) => {
     )?.[1];
 
     const order = await Order.findOne({ _id: order_id });
-
+    console.log(order);
+    console.log(String(order.agent_id));
+    console.log(String(req.agent?._id));
     if (String(order.agent_id) !== String(req.agent?._id))
       return next(new UnauthorizedError("Необходима авторизация"));
 
