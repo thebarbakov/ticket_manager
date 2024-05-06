@@ -23,6 +23,11 @@ async function generateTicket(order_id) {
     footer: {
       height: "28mm",
     },
+    childProcessOptions: {
+      env: {
+        OPENSSL_CONF: "/dev/null",
+      },
+    },
   };
   const tickets = [];
 
@@ -34,7 +39,7 @@ async function generateTicket(order_id) {
 
   const hall = await Hall.findOne({ _id: event.hall_id });
 
-  const config = await Config.findOne({ key: 'pay_types.currency'});
+  const config = await Config.findOne({ key: "pay_types.currency" });
 
   if (event.places) var places = await Place.find({ hall_id: hall._id });
 
