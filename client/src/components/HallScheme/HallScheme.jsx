@@ -124,7 +124,6 @@ export default function HallScheme({
                         : "#b5b5b5"
                     }
                     onClick={() => {
-                      console.log(place)
                       if (!setSelectedPlaces) return;
                       if (place.is_booked) return;
                       if (place.tariff === null & !Boolean(service)) return;

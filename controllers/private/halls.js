@@ -72,8 +72,6 @@ const preCreateHall = async (req, res, next) => {
       hall_id: 1,
     });
 
-    console.log(places);
-
     return res.status(200).json({ file_name, places });
   } catch (e) {
     return next(e);

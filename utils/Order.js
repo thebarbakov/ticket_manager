@@ -558,7 +558,6 @@ class Order {
         this.order.places = places;
         return { order, places };
       } catch (e) {
-        console.log(e)
         return e;
       }
     }
