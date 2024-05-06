@@ -53,7 +53,7 @@ export default function HallScheme({
   selectedPlace,
   setSelectedPlaces,
   color,
-  service
+  service,
 }) {
   const [scheme, setScheme] = useState(null);
   const [size, setSize] = useState({});
@@ -77,7 +77,7 @@ export default function HallScheme({
   }, [hall]);
 
   const selectPlace = (place) => {
-    if (selectedPlace?.length >= appl.config["orders.max_tickets"] & !service)
+    if ((selectedPlace?.length >= appl.config["orders.max_tickets"]) & !service)
       appl.setError("Превышено максимальное количество билетов в заказе");
     else setSelectedPlaces([...selectedPlace, place]);
   };
@@ -123,10 +123,20 @@ export default function HallScheme({
                           : "#b5b5b5"
                         : "#b5b5b5"
                     }
+                    onTouchStart={() => {
+                      if (!setSelectedPlaces) return;
+                      if (place.is_booked) return;
+                      if ((place.tariff === null) & !Boolean(service)) return;
+                      if (selectedPlace.includes(place._id))
+                        setSelectedPlaces(
+                          selectedPlace.filter((el) => el !== place._id)
+                        );
+                      else selectPlace(place._id);
+                    }}
                     onClick={() => {
                       if (!setSelectedPlaces) return;
                       if (place.is_booked) return;
-                      if (place.tariff === null & !Boolean(service)) return;
+                      if ((place.tariff === null) & !Boolean(service)) return;
                       if (selectedPlace.includes(place._id))
                         setSelectedPlaces(
                           selectedPlace.filter((el) => el !== place._id)
