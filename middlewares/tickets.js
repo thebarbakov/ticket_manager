@@ -3,6 +3,7 @@ const UnauthorizedError = require("../errors/UnauthorizedError");
 const Agent = require("../models/Agent");
 const Order = require("../models/Order");
 const User = require("../models/User");
+const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = process.env;
 
 const checkTicket = async (req, res, next) => {
