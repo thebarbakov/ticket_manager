@@ -9,8 +9,8 @@ const { JWT_SECRET } = process.env;
 
 const checkTicket = async (req, res, next) => {
   try {
-    // if (!req.originalUrl.match(/\/api\/assets\/tickets\/(.*)\_.*\.pdf/)?.[1])
-    //   return next();
+    if (!req.originalUrl.match(/\/api\/assets\/tickets\/(.*)\_.*\.pdf/)?.[1])
+      return next();
 
     const { ticket_manager_user, ticket_manager_agent } = req.cookies;
     if (ticket_manager_user) {
