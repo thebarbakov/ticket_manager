@@ -28,6 +28,9 @@ const getEvents = async (req, res, next) => {
     if (req.query.name !== undefined) {
       filter.name = { $regex: new RegExp(req.query.name, "i") };
     }
+    if (req.query.description !== undefined) {
+      filter.description = { $regex: new RegExp(req.query.description, "i") };
+    }
     if ((req.query.f_date !== undefined) & (req.query.t_date !== undefined)) {
       filter.date = {
         $gte: todayFrom(req.query.f_date),
@@ -52,7 +55,11 @@ const getEvents = async (req, res, next) => {
         (req.query.p ? req.query.p - 1 : 0) * (req.query.s ? req.query.s : 10)
       );
 
-    return res.status(200).json({ events });
+    const totalDocs = await Event.find(filter).countDocuments();
+
+    return res
+      .status(200)
+      .json({ events, totalDocs, currentPage: req.query.p });
   } catch (e) {
     return next(e);
   }
@@ -93,7 +100,8 @@ const createEvent = async (req, res, next) => {
       name,
       description,
       date,
-      image,
+      image_file,
+      image_file_name,
       places,
       type,
       open_sales,
@@ -112,12 +120,27 @@ const createEvent = async (req, res, next) => {
       name,
       description,
       date,
-      image,
       places,
       type,
       open_sales,
       close_sales,
     });
+
+    if (image_file && image_file_name) {
+      const base64Data = image_file.replace(/^data:.*?;base64,/, "");
+      var file_name_ready = `event_${new Date().getTime()}.${
+        image_file_name.match(/.*\.(.*)/)[1]
+      }`;
+
+      fs.writeFileSync(
+        `./assets/events_posters/${file_name_ready}`,
+        base64Data,
+        {
+          encoding: "base64",
+        }
+      );
+      newEvent.image = file_name_ready;
+    }
 
     newEvent = await newEvent.save();
 
@@ -132,13 +155,42 @@ const editEvent = async (req, res, next) => {
     if (req.user.access.events !== true)
       return next(new ForbiddenError("Недостаточно прав"));
 
-    const { _id, name, description, date, image, open_sales, close_sales } =
-      req.body;
+    const {
+      _id,
+      name,
+      description,
+      date,
+      image_file,
+      image_file_name,
+      open_sales,
+      close_sales,
+    } = req.body;
 
-    await Event.editOne(
-      { _id },
-      { _id, name, description, date, image, open_sales, close_sales }
-    );
+    const editor = {
+      name,
+      description,
+      date,
+      open_sales,
+      close_sales,
+    };
+
+    if (image_file && image_file_name) {
+      const base64Data = image_file.replace(/^data:.*?;base64,/, "");
+      var file_name_ready = `event_${new Date().getTime()}.${
+        image_file_name.match(/.*\.(.*)/)[1]
+      }`;
+
+      fs.writeFileSync(
+        `./assets/events_posters/${file_name_ready}`,
+        base64Data,
+        {
+          encoding: "base64",
+        }
+      );
+      editor.image = file_name_ready;
+    }
+
+    await Event.updateOne({ _id }, editor);
 
     return res.status(200).json({ status: "ok!" });
   } catch (e) {
@@ -163,6 +215,7 @@ module.exports = {
   getEvents,
   getEvent,
   createEvent,
+  getCreatonOrderInfo,
   editEvent,
   deleteEvent,
 };

@@ -1,6 +1,11 @@
 const { Schema, model, Types } = require("mongoose");
 
 const orderSchema = new Schema({
+  number: {
+    required: true,
+    type: Number,
+    unique: true,
+  },
   event_id: {
     type: Types.ObjectId,
     ref: "event",
@@ -30,7 +35,7 @@ const orderSchema = new Schema({
     type: String,
     required: true,
     default: "booked",
-    enum: ["blank","booked", "confirmed", "canceled"],
+    enum: ["blank", "booked", "confirmed", "canceled"],
   },
   pay_type_id: {
     type: Types.ObjectId,

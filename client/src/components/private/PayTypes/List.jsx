@@ -11,27 +11,34 @@ export default function List() {
     s: 20,
   });
   const [data, setData] = useState([]);
+  const [totalDocs, setTotalDocs] = useState(1);
 
   const appl = useContext(ApplContext);
 
   const getData = () => {
+    appl.setLoading(true);
     payTypesApi
       .getPayTypes(filter)
-      .then(({ pay_types }) => setData(pay_types))
+      .then(({ pay_types, totalDocs }) => {
+        setData(pay_types);
+        setTotalDocs(totalDocs);
+      })
       .catch((err) => {
         if (err.message) appl.setError(err.message);
-      });
+      })
+      .finally(() => appl.setLoading(false));
   };
 
   useEffect(() => {
     getData();
-  }, []);
+  }, [filter]);
 
   const config = [
     {
       field: "name",
       displayName: "Название",
       type: "text",
+      inputType: "text",
       isFilter: true,
       isTitle: true,
       isSubtitle: false,
@@ -40,6 +47,13 @@ export default function List() {
     {
       field: "description",
       displayName: "Описание",
+      type: "text",
+      isFilter: true,
+      isSubtitle: true,
+    },
+    {
+      field: "code",
+      displayName: "Код",
       type: "text",
       isFilter: true,
       isSubtitle: true,
@@ -72,12 +86,19 @@ export default function List() {
   return (
     <>
       <h1>Типы оплат</h1>
-      <Filters config={config} setFilter={setFilter} filter={filter} getData={getData}/>
+      <Filters
+        config={config}
+        setFilter={setFilter}
+        filter={filter}
+        getData={getData}
+      />
       <Table
         config={config}
         setFilter={setFilter}
         filter={filter}
         data={data}
+        totalDocs={totalDocs}
+        editPage="/adm/pay_types/edit"
       />
     </>
   );

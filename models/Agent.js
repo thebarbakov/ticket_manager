@@ -5,20 +5,17 @@ const agentSchema = new Schema({
   second_name: { type: String },
 
   phone: { type: String },
-  email: { type: String },
+  email: { type: String, unique: true, required: true },
 
   utm_source: {
     type: String,
     default: "direct",
-    required: true
   },
   user_agent: {
     type: String,
-    required: true
   },
   ip: {
     type: String,
-    required: true,
   },
 });
 

@@ -2,9 +2,9 @@ function generateHall({ svgData, hall_id }) {
   let parsedSvgData = svgData;
   let parsedData = [];
   svgData.match(/\<circle.*\/>/g).forEach((place) => {
-    const cx = place.match(/cx\=\"([0-9.]*)\"/);
-    const cy = place.match(/cy\=\"([0-9.]*)\"/);
-    const r = place.match(/r\=\"([0-9.]*)\"/);
+    const cx = place.match(/cx\=\"([0-9.]*)\"/)[1];
+    const cy = place.match(/cy\=\"([0-9.]*)\"/)[1];
+    const r = place.match(/r\=\"([0-9.]*)\"/)[1];
     if (parsedData.find((el) => el.cy === cy)) {
       parsedData
         .find((el) => el.cy === cy)
@@ -21,7 +21,7 @@ function generateHall({ svgData, hall_id }) {
     }
     parsedSvgData = parsedSvgData.replace(place, ``);
   });
-  parsedData = parsedData.map((row) => {
+  parsedData = parsedData.sort((a, b) => a.cy - b.cy).map((row) => {
     return {
       ...row,
       places: row.places.sort((a, b) => a.cx - b.cx),
@@ -34,7 +34,7 @@ function generateHall({ svgData, hall_id }) {
       places.push({
         hall_id,
         row: parsedData.length - rind,
-        place: row.places.length - pind,
+        place: pind + 1,
         coordinate: {
           ...place,
         },

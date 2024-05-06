@@ -19,7 +19,8 @@ router.post(
       is_active: Joi.boolean().required(),
 
       name: Joi.string().required(),
-      description: Joi.string().required(),
+      description: Joi.string(),
+      code: Joi.string(),
 
       is_public: Joi.boolean().required(),
     }),
@@ -36,8 +37,8 @@ router.patch(
       is_active: Joi.boolean().required(),
 
       name: Joi.string().required(),
-      description: Joi.string().required(),
-
+      description: Joi.string(),
+      code: Joi.string(),
       is_public: Joi.boolean().required(),
     }),
   }),

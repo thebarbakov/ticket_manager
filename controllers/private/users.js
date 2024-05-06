@@ -3,6 +3,7 @@ const ForbiddenError = require("../../errors/ForbiddenError");
 const ConflictError = require("../../errors/ConflictError");
 const User = require("../../models/User");
 const generateRandomString = require("../../utils/generateRandomString");
+const bcrypt = require("bcryptjs");
 
 const getUsers = async (req, res, next) => {
   try {
@@ -33,7 +34,8 @@ const getUsers = async (req, res, next) => {
       .skip(
         (req.query.p ? req.query.p - 1 : 0) * (req.query.s ? req.query.s : 10)
       );
-    return res.status(200).json({ users });
+    const totalDocs = await User.find(filter).countDocuments();
+    return res.status(200).json({ users, totalDocs, currentPage: req.query.p });
   } catch (e) {
     return next(e);
   }
@@ -118,7 +120,7 @@ const editUser = async (req, res, next) => {
       email,
       password,
       access,
-      _id
+      _id,
     } = req.body;
 
     const candidate = await User.find({ login, _id: { $ne: _id } });
@@ -150,7 +152,7 @@ const editUser = async (req, res, next) => {
       editor.password = await bcrypt.hash(req.body.password, 10);
     }
 
-    await User.editOne({ _id }, editor);
+    await User.updateOne({ _id }, editor);
 
     return res.status(200).json({ status: "ok!" });
   } catch (e) {
@@ -201,7 +203,7 @@ const editMe = async (req, res, next) => {
       editor.password = await bcrypt.hash(req.body.password, 10);
     }
 
-    await User.editOne({ _id: req.user._id }, editor);
+    await User.updateOne({ _id: req.user._id }, editor);
 
     return res.status(200).json({ status: "ok!" });
   } catch (e) {

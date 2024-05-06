@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { Container, Nav, NavDropdown, Navbar } from "react-bootstrap";
+import { Container, Nav, Navbar } from "react-bootstrap";
 import logoLight from "../../media/logo.svg";
 import { useNavigate } from "react-router-dom";
 import { AgentContext } from "../../utils/Contexts/AgentContext";
@@ -20,12 +20,19 @@ export default function NavBar() {
           onClick={() => {
             navigator("/");
           }}
+          style={{ cursor: "pointer" }}
         >
-          <img src={logoLight} width={80} />
+          <img src={logoLight} width={80} alt="Лого" />
         </Navbar.Brand>
         <Nav>
-          <Nav.Link eventKey="#deets">
-            {agent ? agent?.first_name : "Вход"}
+          <Nav.Link
+            onClick={() =>
+              Boolean(agent) & !agent?.no_agent
+                ? navigator("/profile")
+                : navigator("/sign_in")
+            }
+          >
+            {Boolean(agent) & !agent?.no_agent ? agent?.first_name : "Вход"}
           </Nav.Link>
         </Nav>
       </Container>

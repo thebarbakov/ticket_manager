@@ -1,120 +1,13 @@
 const cron = require("node-cron");
-const createRecomendation = require("./recomendation/createRecomendation");
-const crowlMealty = require("./crowlMealty");
-const deleteFilesInFolder = require("./deleteFilesInFolder");
-const removeAvatars = require("./removeAvatars");
-const { resetSuggested } = require("./resetSuggested");
-const { applicationNotifing, remindToOrder } = require("./telegramFunctions");
-const sendEmail = require("./mail/sendEmail");
-const learnSystem = require("./recomendation/learnSystem");
-const saveRecomendation = require("./saveRecomendation");
+const cancelBlankOrders = require("./cron/cancelBlankOrders");
+const cancelBookedOrder = require("./cron/cancelBookedOrder");
+const deleteFilesInFolder = require("./cron/deleteFilesInFolder");
 
 cron.schedule(
-  "00 22 * * 3",
-  async () => {
-    await resetSuggested();
-  },
-  {
-    scheduled: true,
-    timezone: "Europe/Moscow",
-  }
-);
-
-cron.schedule(
-  "00 22 * * 5",
-  async () => {
-    await resetSuggested();
-  },
-  {
-    scheduled: true,
-    timezone: "Europe/Moscow",
-  }
-);
-
-cron.schedule(
-  "00 20 * * 3",
-  async () => {
-    await applicationNotifing();
-  },
-  {
-    scheduled: true,
-    timezone: "Europe/Moscow",
-  }
-);
-
-cron.schedule(
-  "00 21 * * 3",
-  async () => {
-    await applicationNotifing();
-  },
-  {
-    scheduled: true,
-    timezone: "Europe/Moscow",
-  }
-);
-
-cron.schedule(
-  "00 19 * * 7",
-  async () => {
-    await applicationNotifing();
-  },
-  {
-    scheduled: true,
-    timezone: "Europe/Moscow",
-  }
-);
-
-cron.schedule(
-  "00 20 * * 7",
-  async () => {
-    await applicationNotifing();
-  },
-  {
-    scheduled: true,
-    timezone: "Europe/Moscow",
-  }
-);
-
-cron.schedule(
-  "00 21 * * 7",
-  async () => {
-    await applicationNotifing();
-  },
-  {
-    scheduled: true,
-    timezone: "Europe/Moscow",
-  }
-);
-
-cron.schedule(
-  "00 22 * * 3",
-  async () => {
-    await crowlMealty();
-  },
-  {
-    scheduled: true,
-    timezone: "Europe/Moscow",
-  }
-);
-
-cron.schedule(
-  "00 22 * * 5",
-  async () => {
-    await crowlMealty();
-  },
-  {
-    scheduled: true,
-    timezone: "Europe/Moscow",
-  }
-);
-
-cron.schedule(
-  "25 4 * * *",
+  "*/15 * * * *",
   () => {
-    console.log(1);
-    deleteFilesInFolder("./media/import");
-    deleteFilesInFolder("./media/export/applications");
-    deleteFilesInFolder("./media/export/reports");
+    deleteFilesInFolder("./assets/halls_schemes/raw");
+    deleteFilesInFolder("./assets/tickets");
   },
   {
     scheduled: true,
@@ -123,20 +16,10 @@ cron.schedule(
 );
 
 cron.schedule(
-  "25 4 * * 7",
+  "*/1 * * * *",
   async () => {
-    await removeAvatars();
-  },
-  {
-    scheduled: true,
-    timezone: "Europe/Moscow",
-  }
-);
-
-cron.schedule(
-  "25 4 * * 7",
-  async () => {
-    await saveRecomendation();
+    await cancelBlankOrders();
+    await cancelBookedOrder();
   },
   {
     scheduled: true,

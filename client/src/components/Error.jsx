@@ -9,7 +9,8 @@ export default function Error({ error, setError }) {
       style={{
         position: "fixed",
         bottom: 20,
-        left: 20,
+        right: 20,
+        zIndex: 9998,
       }}
     >
       <Toast.Header>

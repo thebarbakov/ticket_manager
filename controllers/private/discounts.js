@@ -5,6 +5,8 @@ const User = require("../../models/User");
 const generateRandomString = require("../../utils/generateRandomString");
 const Discount = require("../../models/Discount");
 const CastError = require("../../errors/CastError");
+const Tariff = require("../../models/Tariff");
+const PlacesTariff = require("../../models/PlacesTariff");
 
 const todayFrom = (date) => {
   const today = new Date(date);
@@ -47,8 +49,24 @@ const getDiscounts = async (req, res, next) => {
       .skip(
         (req.query.p ? req.query.p - 1 : 0) * (req.query.s ? req.query.s : 10)
       );
+    const totalDocs = await Discount.find(filter).countDocuments();
 
-    return res.status(200).json({ discounts });
+    return res
+      .status(200)
+      .json({ discounts, totalDocs, currentPage: req.query.p });
+  } catch (e) {
+    return next(e);
+  }
+};
+
+const getCreationInfo = async (req, res, next) => {
+  try {
+    if (req.user.access.discounts !== true)
+      return next(new ForbiddenError("Недостаточно прав"));
+
+    const tariffs = await Tariff.find();
+    const tariffs_places = await PlacesTariff.find();
+    return res.status(200).json({ tariffs, tariffs_places });
   } catch (e) {
     return next(e);
   }
@@ -59,8 +77,10 @@ const getDiscount = async (req, res, next) => {
     if (req.user.access.discounts !== true)
       return next(new ForbiddenError("Недостаточно прав"));
 
+    const tariffs = await Tariff.find();
+    const tariffs_places = await PlacesTariff.find();
     const discount = await Discount.findOne({ _id: req.params.id });
-    return res.status(200).json({ discount });
+    return res.status(200).json({ discount, tariffs, tariffs_places });
   } catch (e) {
     return next(e);
   }
@@ -207,4 +227,5 @@ module.exports = {
   createDiscount,
   editDiscount,
   deleteDiscount,
+  getCreationInfo,
 };

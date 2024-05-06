@@ -4,6 +4,7 @@ const OrderPlaces = require("../models/OrderPlaces");
 const Place = require("../models/Place");
 const PlacesTariff = require("../models/PlacesTariff");
 const Tariff = require("../models/Tariff");
+const Order = require("../models/Order");
 
 async function getHallEventScheme({ event_id, show_order }) {
   const event = await Event.findOne({ _id: event_id });
@@ -15,21 +16,32 @@ async function getHallEventScheme({ event_id, show_order }) {
     places: [],
   };
 
+  const ordersForEvent = await Order.find({
+    event_id: event._id,
+    status: { $ne: "canceled" },
+  });
+
   if (event.type === "tariff") {
     const tariffs = await Tariff.find({ event_id: event_id });
-    result.tarriff = [];
-    for await (const tariff of tariffs) {
-      if (tariff.limit) {
-        const orders = await OrderPlaces.find({ tariff_id: tariff.id });
-        result.tarriff.push({
+    result.tariffs = [];
+    for await (const { _doc } of tariffs) {
+      const tariff = _doc;
+      if (tariff.is_on_limit) {
+        const orders = await OrderPlaces.find({
+          tariff_id: tariff._id,
+          order_id: { $in: ordersForEvent.map((el) => el._id) },
+        });
+        result.tariffs.push({
           ...tariff,
           limit_booked: orders.length,
           limit_left: tariff.limit - orders.length,
         });
+      } else {
+        result.tariffs.push(tariff);
       }
     }
   } else if (event.type === "places") {
-    result.places_tarriff = await PlacesTariff.find({ event_id: event_id });
+    result.places_tariff = await PlacesTariff.find({ event_id: event_id });
   }
 
   if (!event.places) return result;
@@ -38,9 +50,8 @@ async function getHallEventScheme({ event_id, show_order }) {
 
   result.places = [];
 
-  const ordersForEvent = await Order.find({ event_id: event._id });
-
-  for await (const place of places) {
+  for await (const { _doc } of places) {
+    const place = _doc;
     if (event.type === "tariff") {
       const place_order = await OrderPlaces.findOne({
         order_id: { $in: ordersForEvent.map((el) => el._id) },
@@ -50,7 +61,7 @@ async function getHallEventScheme({ event_id, show_order }) {
         ...place,
         is_booked: place_order ? true : false,
       };
-      if (show_order) obj.order_id = place_order.order_id;
+      if (show_order) obj.order = place_order;
       result.places.push(obj);
     } else if (event.type === "places") {
       const place_order = await OrderPlaces.findOne({
@@ -60,12 +71,20 @@ async function getHallEventScheme({ event_id, show_order }) {
       const obj = {
         ...place,
         is_booked: place_order ? true : false,
-        tariff: result.places_tarriff.find((tr) =>
-          tr.places.find((pl) => pl.id === place._id)
-        )._id,
-        color: result.places_tarriff.find((tr) =>
-          tr.places.find((pl) => pl.id === place._id)
-        ).color,
+        tariff: result.places_tariff.find((tr) =>
+          tr.places.find((pl) => String(pl.id) === String(place._id))
+        )
+          ? result.places_tariff.find((tr) =>
+              tr.places.find((pl) => String(pl.id) === String(place._id))
+            )._id
+          : null,
+        color: result.places_tariff.find((tr) =>
+          tr.places.find((pl) => String(pl.id) === String(place._id))
+        )
+          ? result.places_tariff.find((tr) =>
+              tr.places.find((pl) => String(pl.id) === String(place._id))
+            ).color
+          : null,
       };
       if (show_order) obj.order_id = place_order.order_id;
       result.places.push(obj);

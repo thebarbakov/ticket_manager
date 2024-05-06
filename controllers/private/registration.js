@@ -14,7 +14,7 @@ const signIn = async (req, res, next) => {
     const { login, password } = req.body;
 
     const user = await User.findOne({ login }, "+password");
-    console.log(user)
+
     if (!user) {
       return next(new UnauthorizedError("Неправильная почта или пароль"));
     }
@@ -76,7 +76,6 @@ const signUp = async (req, res, next) => {
 
     return res.status(201).json(newUser);
   } catch (e) {
-    console.log(e);
     if (e.code === 11000) {
       return next(new ConflictError("Пользователь уже существует"));
     }

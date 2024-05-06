@@ -26,7 +26,7 @@ router.post(
       first_name: Joi.string().min(2).max(30).required(),
       second_name: Joi.string().min(2).max(30).required(),
       login: Joi.string().min(2).max(30).required(),
-      email: Joi.string().required(),
+      email: Joi.string().required().email(),
       password: Joi.string().required(),
     }),
   }),

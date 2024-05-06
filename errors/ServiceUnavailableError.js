@@ -6,5 +6,5 @@ class ServiceUnavailableError extends Error {
     }
   }
   
-  module.exports = NotFoundError;
+  module.exports = ServiceUnavailableError;
   

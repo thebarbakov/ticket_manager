@@ -19,7 +19,7 @@ class PayTypesApi extends ApiPrivate {
     }).then((res) => this._checkResponse(res));
   }
 
-  createPayType({ is_active, name, description, is_public }) {
+  createPayType({ is_active, name, description, is_public, code }) {
     return fetch(this._baseURL + "pay_types/", {
       method: "POST",
       headers: {
@@ -30,11 +30,12 @@ class PayTypesApi extends ApiPrivate {
         name,
         description,
         is_public,
+        code,
       }),
     }).then((res) => this._checkResponse(res));
   }
 
-  editPayType({ is_active, name, description, is_public, _id }) {
+  editPayType({ is_active, name, description, is_public, _id, code }) {
     return fetch(this._baseURL + "pay_types/", {
       method: "PATCH",
       headers: {
@@ -46,6 +47,7 @@ class PayTypesApi extends ApiPrivate {
         description,
         is_public,
         _id,
+        code,
       }),
     }).then((res) => this._checkResponse(res));
   }

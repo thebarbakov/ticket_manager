@@ -4,7 +4,6 @@ const { MAIL_ADDRESS } = process.env;
 
 const sendRegisterMail = async ({ user, team }) => {
   if (!user || !team) return;
-  console.log(1)
   await sendEmail({
     to: user.email,
     subject: "Регистрация на Inspiro Eda",

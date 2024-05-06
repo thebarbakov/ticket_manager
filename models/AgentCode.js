@@ -8,6 +8,7 @@ const agentCodeSchema = new Schema({
   },
   code: { type: String, require: true },
   generated_in: { type: Date, default: new Date() },
+  used: { type: Boolean, default: false, require: true },
 });
 
 module.exports = model("AgentCode", agentCodeSchema);

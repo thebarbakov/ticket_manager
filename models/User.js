@@ -6,9 +6,9 @@ const userSchema = new Schema({
   first_name: { type: String, required: true },
   second_name: { type: String },
 
-  email: { type: String },
+  email: { type: String, unique: true, required: true },
 
-  login: { type: String, required: true },
+  login: { type: String, required: true, unique: true },
   password: { type: String, required: true, select: false },
 
   scanner: { type: String, required: true },

@@ -1,7 +1,11 @@
 const { Router } = require("express");
 const NotFound = require("../../errors/NotFound");
 const Hall = require("../../models/Hall");
+const Place = require("../../models/Place");
 const Tariff = require("../../models/Tariff");
+const PlacesTariff = require("../../models/PlacesTariff");
+const Event = require("../../models/Event");
+const getHallEventScheme = require("../../utils/getHallEventScheme");
 
 // /api/groups
 
@@ -9,6 +13,7 @@ const getEvents = async (req, res, next) => {
   try {
     const events = await Event.find({
       close_sales: { $gt: new Date() },
+      date: { $gt: new Date() },
     });
 
     const halls = await Hall.find(
@@ -27,27 +32,27 @@ const getEvents = async (req, res, next) => {
 
 const getEvent = async (req, res, next) => {
   try {
-    const { event_id } = req.query;
+    const { id } = req.params;
 
-    const event = await Event.findOne({ event_id });
+    const event = await Event.findOne({ event_id: id });
 
     if (!event) return next(new NotFound("Мероприятие не найдено"));
 
-    const hall = await Hall.findOne({ _id: event.hall_id });
+    // const hall = await Hall.findOne({ _id: event.hall_id });
 
-    const response = { hall, event };
+    // const response = { hall, event };
 
-    if (event.places)
-      response.scheme = JSON.parse(
-        fs.readFileSync(`./assets/halls_schemes/${hall.scheme}`, "utf8")
-      );
+    response = await getHallEventScheme({
+      event_id: id,
+    });
 
-    if (event.type === "tariff")
-      response.tariff = await Tariff.find({ event_id });
-    else if (event.type === "places")
-      response.places_tariff = await PlacesTariff.find({ event_id });
+    // if (event.places)
+    //   response.places = await Place.find({ hall_id: event.hall_id });
 
-    
+    // if (event.type === "tariff")
+    //   response.tariff = await Tariff.find({ event_id: id });
+    // else if (event.type === "places")
+    //   response.places_tariff = await PlacesTariff.find({ event_id: id });
 
     return res.status(200).json(response);
   } catch (e) {

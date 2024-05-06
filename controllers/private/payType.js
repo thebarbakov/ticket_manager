@@ -18,7 +18,10 @@ const getPayTypes = async (req, res, next) => {
       filter.description = { $regex: new RegExp(req.query.description, "i") };
     }
     if (req.query.is_active !== undefined) {
-      filter.description = { $regex: new RegExp(req.query.is_active, "i") };
+      filter.is_active = { $regex: new RegExp(req.query.is_active, "i") };
+    }
+    if (req.query.code !== undefined) {
+      filter.code = { $regex: new RegExp(req.query.code, "i") };
     }
     if (req.query.is_public !== undefined) {
       filter.is_public = { $regex: new RegExp(req.query.is_public, "i") };
@@ -34,7 +37,8 @@ const getPayTypes = async (req, res, next) => {
       .skip(
         (req.query.p ? req.query.p - 1 : 0) * (req.query.s ? req.query.s : 10)
       );
-    return res.status(200).json({ pay_types });
+      const totalDocs = await PayType.find(filter).countDocuments();
+    return res.status(200).json({ pay_types, totalDocs, currentPage: req.query.p });
   } catch (e) {
     return next(e);
   }
@@ -57,9 +61,9 @@ const createPayType = async (req, res, next) => {
     if (req.user.access.pay_types !== true)
       return next(new ForbiddenError("Недостаточно прав"));
 
-    const { is_active, name, description, is_public } = req.body;
+    const { is_active, name, description, is_public, code } = req.body;
 
-    let newPayType = new PayType({ is_active, name, description, is_public });
+    let newPayType = new PayType({ is_active, name, description, is_public, code });
 
     newPayType = await newPayType.save();
 
@@ -74,9 +78,9 @@ const editPayType = async (req, res, next) => {
     if (req.user.access.pay_types !== true)
       return next(new ForbiddenError("Недостаточно прав"));
 
-    const { is_active, name, description, is_public, _id } = req.body;
+    const { is_active, name, description, is_public, _id, code } = req.body;
 
-    await PayType.editOne({ _id }, { is_active, name, description, is_public });
+    await PayType.updateOne({ _id }, { is_active, name, description, is_public, code });
 
     return res.status(200).json({ status: "ok!" });
   } catch (e) {

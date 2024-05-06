@@ -1,14 +1,13 @@
 const { Router } = require("express");
 const fs = require("node:fs");
-const Favorite = require("../models/Favorite");
-const User = require("../../models/User");
 const { ObjectId } = require("mongodb");
-const ForbiddenError = require("../errors/ForbiddenError");
-const CastError = require("../errors/CastError");
+const ForbiddenError = require("../../errors/ForbiddenError");
+const CastError = require("../../errors/CastError");
 const Hall = require("../../models/Hall");
 const Place = require("../../models/Place");
 const generateHall = require("../../utils/generateHall");
 const Tariff = require("../../models/Tariff");
+const Event = require("../../models/Event");
 
 // /api/groups
 
@@ -39,8 +38,11 @@ const getTariffs = async (req, res, next) => {
       .skip(
         (req.query.p ? req.query.p - 1 : 0) * (req.query.s ? req.query.s : 10)
       );
+    const totalDocs = await Tariff.find(filter).countDocuments();
     const events = await Event.find({}, { _id: 1, name: 1, date: 1 });
-    return res.status(200).json({ tariffs, events });
+    return res
+      .status(200)
+      .json({ tariffs, events, totalDocs, currentPage: req.query.p });
   } catch (e) {
     return next(e);
   }
@@ -52,7 +54,7 @@ const getTariff = async (req, res, next) => {
       return next(new ForbiddenError("Недостаточно прав"));
 
     const tariff = await Tariff.findOne({ _id: req.params.id });
-    const events = await Event.findOne({ _id: tariff.event_id });
+    const events = await Event.find({ _id: tariff.event_id });
     return res.status(200).json({ tariff, events });
   } catch (e) {
     return next(e);
@@ -64,7 +66,10 @@ const getCreatonTariffInfo = async (req, res, next) => {
     if (req.user.access.tariff !== true)
       return next(new ForbiddenError("Недостаточно прав"));
 
-    const events = await Event.find({}, { name: 1, _id: 1, date: 1 });
+    const events = await Event.find(
+      { type: "tariff" },
+      { name: 1, _id: 1, date: 1 }
+    );
 
     return res.status(200).json({ events });
   } catch (e) {
@@ -104,11 +109,10 @@ const editTariff = async (req, res, next) => {
   try {
     if (req.user.access.tariff !== true)
       return next(new ForbiddenError("Недостаточно прав"));
-    const { tariff_id, name, description, limit, is_on_limit, price } =
-      req.body;
+    const { _id, name, description, limit, is_on_limit, price } = req.body;
 
     await Tariff.findOneAndUpdate(
-      { _id: tariff_id },
+      { _id },
       { name, description, limit, is_on_limit, price }
     );
 
