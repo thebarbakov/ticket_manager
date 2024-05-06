@@ -1,4 +1,5 @@
 require("dotenv").config();
+const ServiceUnavailableError = require("../errors/ServiceUnavailableError");
 const UnauthorizedError = require("../errors/UnauthorizedError");
 const Agent = require("../models/Agent");
 const Order = require("../models/Order");
@@ -12,7 +13,6 @@ const checkTicket = async (req, res, next) => {
     //   return next();
 
     const { ticket_manager_user, ticket_manager_agent } = req.cookies;
-
     if (ticket_manager_user) {
       const { user_id } = jwt.verify(ticket_manager_user, JWT_SECRET);
       const user = await User.findOne({ _id: user_id });
@@ -30,6 +30,7 @@ const checkTicket = async (req, res, next) => {
     } else {
       return next(new UnauthorizedError("Необходима авторизация"));
     }
+    return next(new ServiceUnavailableError("Ошибка"));
   } catch (e) {
     return next(e);
   }
