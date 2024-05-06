@@ -592,7 +592,7 @@ class Order {
         const discount = await Discount.findOne({
           promocode: promocode,
         });
-
+        console.log(discount)
         if (!discount) return new CastError("Промокод недействителен");
 
         const ordersWithDiscount = await OrderModel.find({

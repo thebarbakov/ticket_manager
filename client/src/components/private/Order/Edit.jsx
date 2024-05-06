@@ -54,7 +54,8 @@ export default function Edit() {
             title: "Успешно отправлено!",
             ob: true,
           });
-        window.open("/api/assets/tickets/" + fileName, "_blank");
+        const windowReference = window.open();
+        windowReference.location = "/api/assets/tickets/" + fileName;
       })
       .catch((err) => {
         if (err.message) appl.setError(err.message);

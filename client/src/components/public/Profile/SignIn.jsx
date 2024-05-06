@@ -24,7 +24,7 @@ export default function SignIn({ getMe }) {
         .signIn({ email, code })
         .then(({ user }) => {
           getMe();
-          navigator("/profile");
+          setTimeout(() => navigator("/profile"), 100);
         })
         .catch((err) => {
           if (err.message) setError(err.message);

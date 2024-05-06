@@ -58,11 +58,12 @@ export default function Order() {
 
   const sendTicket = (type) => {
     appl.setLoading(true);
+    const windowReference = window.open();
     ordersApi
       .getTickets({ order_id, type })
       .then(({ fileName }) => {
         if (type === "email") return setOpenModal(2);
-        window.open("/api/assets/tickets/" + fileName, "_blank");
+        windowReference.location = "/api/assets/tickets/" + fileName;
       })
       .catch((err) => {
         if (err.message) appl.setError(err.message);
