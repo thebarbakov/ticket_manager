@@ -53,7 +53,7 @@ export default function Main() {
         <Container>
           <Routes>
             <Route path="/" element={<Events />} />
-            
+
             <Route
               path="/profile"
               element={<Profile signOut={signOut} getMe={getMe} />}

@@ -44,6 +44,7 @@ class Order {
       if (!discount.is_on) return 0;
       const ordersWithDiscount = await OrderModel.find({
         discount: discount._id,
+        status: { $ne: "canceled" },
       }).count();
 
       if (discount.limit_is_active && discount.limit <= ordersWithDiscount)
@@ -596,6 +597,7 @@ class Order {
 
         const ordersWithDiscount = await OrderModel.find({
           discount: discount._id,
+          status: { $ne: "canceled" },
         }).count();
 
         if (discount.limit_is_active && discount.limit <= ordersWithDiscount)

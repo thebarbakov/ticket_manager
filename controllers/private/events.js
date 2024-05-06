@@ -6,6 +6,7 @@ const generateRandomString = require("../../utils/generateRandomString");
 const Event = require("../../models/Event");
 const Hall = require("../../models/Hall");
 const CastError = require("../../errors/CastError");
+const fs = require("fs");
 
 const todayFrom = (date) => {
   const today = new Date(date);

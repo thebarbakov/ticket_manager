@@ -18,6 +18,7 @@ const Tariff = require("../../models/Tariff");
 const sendOrderChangeStatus = require("../../utils/mail/sendOrderChangeStatus");
 const generateTicket = require("../../utils/generateTicket");
 const sendTicket = require("../../utils/mail/sendTicket");
+const PlacesTariff = require("../../models/PlacesTariff");
 
 const { SYSTEM_URL } = process.env;
 

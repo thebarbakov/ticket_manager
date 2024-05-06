@@ -79,7 +79,7 @@ export default function Profile({ signOut, getMe }) {
               />
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Label>Имя</Form.Label>
+              <Form.Label>Фамилия</Form.Label>
               <Form.Control
                 type="text"
                 value={agent.second_name}
@@ -88,7 +88,7 @@ export default function Profile({ signOut, getMe }) {
               />
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Label>Имя</Form.Label>
+              <Form.Label>Email</Form.Label>
               <Form.Control
                 type="email"
                 value={agent.email}

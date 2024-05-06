@@ -4,6 +4,8 @@ import payTypesApi from "../../../utils/Api/private/payTypesApi";
 import { ApplContext } from "../../../utils/Contexts/ApplContext";
 import { useNavigate } from "react-router-dom";
 import eventsApi from "../../../utils/Api/private/eventsApi";
+import toBase64 from "../../../utils/toBase64";
+import { Image, Form as BootstrapForm } from "react-bootstrap";
 
 export default function Edit() {
   const [data, setData] = useState({});
@@ -136,6 +138,31 @@ export default function Edit() {
       title={data.name ? data.name : "Новое мероприятие"}
       onDelete={onDelete}
       back_href="/adm/events/list"
-    />
+    >
+      {data.image ? (
+        <Image
+          src={"api/assets/events_posters/" + data.image}
+          rounded
+          style={{ objectFit: "contain", width: 300 }}
+        />
+      ) : (
+        ""
+      )}
+      <BootstrapForm.Group className="mb-3">
+        <BootstrapForm.Label>Изображение</BootstrapForm.Label>
+        <BootstrapForm.Control
+          type="file"
+          accept="image/*"
+          onChange={async (e) => {
+            const base64 = await toBase64(e.target.files[0]);
+            setData({
+              ...data,
+              image_file: base64,
+              image_file_name: e.target.files[0].name,
+            });
+          }}
+        />
+      </BootstrapForm.Group>
+    </Form>
   );
 }

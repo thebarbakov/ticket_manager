@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Card, ListGroup } from "react-bootstrap";
+import { Button, Card, ListGroup } from "react-bootstrap";
 import eventsApi from "../../utils/Api/public/eventsApi";
 import { ApplContext } from "../../utils/Contexts/ApplContext";
 import { useNavigate } from "react-router-dom";
@@ -28,16 +28,13 @@ export default function Events() {
       <Card.Header>
         <h1>Список мероприятий</h1>
       </Card.Header>
-      <Card.Body style={{minHeight: '70vh'}}>
+      <Card.Body className="d-flex flex-wrap" style={{ minHeight: "70vh", gap: 15 }}>
         {events.map((event) => (
-          <ListGroup.Item
-            key={event._id}
-            action
-            onClick={() => navigator("/event/" + event._id)}
-          >
-            <div>
-              <p className="fw-bold fs-4 mb-1">
-                {event.name} –{" "}
+          <Card style={{ width: "18rem" }}>
+            {event.image ? <Card.Img variant="top" src={"api/assets/events_posters/" + event.image}/> : <div className="card-img-top bg-primary" style={{height: 152}}/>}
+            <Card.Body>
+              <Card.Title>{event.name}</Card.Title>
+              <Card.Subtitle>
                 {new Date(event.date).toLocaleDateString("ru-RU", {
                   year: "numeric",
                   month: "2-digit",
@@ -45,14 +42,18 @@ export default function Events() {
                   hour: "2-digit",
                   minute: "2-digit",
                 })}
-              </p>
-              <p>
+                {" | "}
                 {halls.find((el) => el._id === event.hall_id)?.name}
-                {"  |  "}
-                {halls.find((el) => el._id === event.hall_id)?.address}
-              </p>
-            </div>
-          </ListGroup.Item>
+              </Card.Subtitle>
+              <Card.Text>{event.description}</Card.Text>
+              <Button
+                variant="secondary"
+                onClick={() => navigator("/event/" + event._id)}
+              >
+                Купить билеты
+              </Button>
+            </Card.Body>
+          </Card>
         ))}
       </Card.Body>
     </Card>
