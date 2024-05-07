@@ -55,7 +55,13 @@ const sendOrderConfirmed = async ({ order_id }) => {
       });
     }
   }
-  const order = { ...orderModal._doc, event, pay_type, hall, places: placesResult };
+  const order = {
+    ...orderModal._doc,
+    event,
+    pay_type,
+    hall,
+    places: placesResult,
+  };
 
   await sendEmail({
     to: agent.email,
@@ -322,24 +328,9 @@ const sendOrderConfirmed = async ({ order_id }) => {
                             "
                             valign="top"
                           >
-                            <h2
-                              class="aligncenter"
-                              style="
-                                font-family: 'Helvetica Neue', Helvetica, Arial,
-                                  'Lucida Grande', sans-serif;
-                                box-sizing: border-box;
-                                font-size: 18px;
-                                color: #000;
-                                line-height: 1.2em;
-                                text-align: center;
-                                margin: 40px 0 0;
-                              "
-                              align="center"
-                            >
                               ${
                                 agent.first_name
                               }, недавно вы оформили заказ на сайте <a href="${SYSTEM_URL}">${SYSTEM_URL}</a>. Отправляем Вам состав Вашего заказа.
-                            </h2>
                           </td>
                         </tr>
                         <tr
@@ -395,8 +386,7 @@ const sendOrderConfirmed = async ({ order_id }) => {
                                 ${
                                   config.find(
                                     (el) =>
-                                      el.key ===
-                                      "pay_types.transfer.card_number"
+                                      el.key === "pay_types.transfer.descr"
                                   ).value
                                 }
                                 <p><strong>${
