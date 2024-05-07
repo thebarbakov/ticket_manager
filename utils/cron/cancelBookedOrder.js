@@ -16,9 +16,12 @@ const cancelBookedOrder = async () => {
 
   for await (const order of orders) {
     const agent = await Agent.findOne({ _id: order.agent_id });
+    order.status = "canceled";
+    order.is_payed = false;
+    
     await sendOrderChangeStatus({
       agent,
-      order: { ...order, status: "canceled", is_payed: false },
+      order: order,
       link: `${SYSTEM_URL}/profile/orders/${order._id}`,
     });
   }

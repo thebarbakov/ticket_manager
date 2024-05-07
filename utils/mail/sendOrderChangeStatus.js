@@ -241,7 +241,7 @@ const sendOrderChangeStatus = async ({ agent, order, link }) => {
                             "
                             valign="top"
                           >
-                            Здравствуйте, ${agent.first_name}! Статус Вашего заказа ${order.number}, который вы оформили на на сайте <a
+                            Здравствуйте, ${agent.first_name}! Статус Вашего заказа №${order.number}, который вы оформили на на сайте <a
                             href="${SYSTEM_URL}"
                             style="
                               font-family: 'Helvetica Neue', Helvetica, Arial,
