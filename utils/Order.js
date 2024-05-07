@@ -418,7 +418,7 @@ class Order {
 
       const orderNumber = await OrderModel.find().sort({ number: -1 }).limit(1);
       const newOrderBlank = {
-        number: orderNumber[0].number + 1,
+        number: orderNumber[0] ? orderNumber[0].number + 1 : 1,
         event_id: this.event_id,
         created_date: new Date(),
         summa,
