@@ -97,7 +97,7 @@ const createUser = async (req, res, next) => {
       editor.password = await bcrypt.hash(req.body.password, 10);
     }
 
-    let newUser = new User({ ...editor, scanner: generateRandomString(32) });
+    let newUser = new User({ ...editor });
 
     newUser = await newUser.save();
 

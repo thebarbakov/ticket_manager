@@ -11,7 +11,6 @@ const userSchema = new Schema({
   login: { type: String, required: true, unique: true },
   password: { type: String, required: true, select: false },
 
-  scanner: { type: String, required: true },
   tg_id: { type: String },
 
   access: {

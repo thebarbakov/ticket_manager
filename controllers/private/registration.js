@@ -66,7 +66,6 @@ const signUp = async (req, res, next) => {
         tariff: true,
         is_root: true,
       },
-      scanner: "test123",
       password: await bcrypt.hash(password, 10),
     });
 
