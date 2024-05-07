@@ -27,8 +27,8 @@ const preCreateOrder = async (req, res, next) => {
     const { agent_id, places, event_id } = req.body;
 
     const pay_types = await PayType.find(
-      {},
-      { _id: 1, name: 1, is_public: true, is_active: true }
+      { is_public: true, is_active: true },
+      { _id: 1, name: 1 }
     );
 
     const newOrder = new OrderClass({
@@ -64,6 +64,15 @@ const applyPromocode = async (req, res, next) => {
 const createOrder = async (req, res, next) => {
   try {
     const { _id, pay_type_id } = req.body;
+
+    const payType = await PayType.findOne({ _id: pay_type_id });
+
+    if (!payType.is_public)
+      return next(
+        new ForbiddenError(
+          "Тип оплаты недоступен для оформления заказа с сайта"
+        )
+      );
 
     await Order.updateOne(
       { _id },

@@ -124,16 +124,14 @@ const getOrders = async (req, res, next) => {
       {},
       { _id: 1, first_name: 1, second_name: 1, email: 1 }
     );
-    return res
-      .status(200)
-      .json({
-        orders,
-        events,
-        pay_types,
-        agents,
-        totalDocs,
-        currentPage: req.query.p,
-      });
+    return res.status(200).json({
+      orders,
+      events,
+      pay_types,
+      agents,
+      totalDocs,
+      currentPage: req.query.p,
+    });
   } catch (e) {
     return next(e);
   }
@@ -205,7 +203,10 @@ const getCreatonOrderInfo = async (req, res, next) => {
       return next(new ForbiddenError("Недостаточно прав"));
 
     const event = await Event.findOne({ _id: req.params.event_id });
-    const pay_types = await PayType.find({}, { _id: 1, name: 1 });
+    const pay_types = await PayType.find(
+      { is_active: true },
+      { _id: 1, name: 1 }
+    );
     const agents = await Agent.find(
       {},
       { first_name: 1, second_name: 1, email: 1, phone: 1, _id: 1 }
