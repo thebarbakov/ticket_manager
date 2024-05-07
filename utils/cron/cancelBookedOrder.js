@@ -6,7 +6,7 @@ const { SYSTEM_URL } = process.env;
 
 const cancelBookedOrder = async () => {
   const config = await Config.findOne({ key: "orders.cancel_after_booked" });
-  
+
   const orders = await Order.find({
     status: "booked",
     created_date: {
@@ -14,12 +14,12 @@ const cancelBookedOrder = async () => {
     },
   });
 
-  for await (const { _doc } of orders) {
-    const agent = await Agent.findOne({ _id: _doc.agent_id });
+  for await (const order of orders) {
+    const agent = await Agent.findOne({ _id: order.agent_id });
     await sendOrderChangeStatus({
       agent,
-      order: _doc,
-      link: `${SYSTEM_URL}/profile/orders/${_doc._id}`,
+      order,
+      link: `${SYSTEM_URL}/profile/orders/${order._id}`,
     });
   }
   
