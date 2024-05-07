@@ -10,7 +10,7 @@ const cancelBookedOrder = async () => {
   const orders = await Order.find({
     status: "booked",
     created_date: {
-      $lte: new Date().setHours(new Date().getHours() - config.value),
+      $lte:  new Date(new Date().setHours(new Date().getHours() - config.value)),
     },
   });
 
@@ -18,7 +18,7 @@ const cancelBookedOrder = async () => {
     const agent = await Agent.findOne({ _id: order.agent_id });
     order.status = "canceled";
     order.is_payed = false;
-    
+
     await sendOrderChangeStatus({
       agent,
       order: order,
@@ -30,8 +30,8 @@ const cancelBookedOrder = async () => {
     {
       status: "booked",
       created_date: {
-        $lte: new Date().setHours(new Date().getHours() - config.value),
-      },
+        $lte:  new Date(new Date().setHours(new Date().getHours() - config.value)),
+    },
     },
     { status: "canceled" }
   );
