@@ -34,6 +34,7 @@ export default function Events() {
             {event.image ? <Card.Img variant="top" src={"api/assets/events_posters/" + event.image}/> : <div className="card-img-top bg-primary" style={{height: 152}}/>}
             <Card.Body>
               <Card.Title>{event.name}</Card.Title>
+              <br />
               <Card.Subtitle>
                 {new Date(event.date).toLocaleDateString("ru-RU", {
                   year: "numeric",
@@ -45,6 +46,7 @@ export default function Events() {
                 {" | "}
                 {halls.find((el) => el._id === event.hall_id)?.name}
               </Card.Subtitle>
+              <br />
               <Card.Text>{event.description}</Card.Text>
               <Button
                 variant="secondary"
