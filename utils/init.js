@@ -3,7 +3,7 @@ const Config = require("../models/Config");
 const bcrypt = require("bcryptjs");
 
 async function init() {
-  const users = User.find();
+  const users = await User.find();
   if (users.length !== 0) return;
 
   const user = new User({
