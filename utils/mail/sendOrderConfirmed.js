@@ -331,7 +331,6 @@ const sendOrderConfirmed = async ({ order_id }) => {
                                 font-size: 18px;
                                 color: #000;
                                 line-height: 1.2em;
-                                font-weight: 400;
                                 text-align: center;
                                 margin: 40px 0 0;
                               "
@@ -388,6 +387,7 @@ const sendOrderConfirmed = async ({ order_id }) => {
                                 font-size: 14px;
                                 vertical-align: top;
                                 margin: 0;
+                                font-weight: bold;
                                 padding: 0 0 20px;
                               "
                               valign="top"
@@ -426,6 +426,7 @@ const sendOrderConfirmed = async ({ order_id }) => {
                               box-sizing: border-box;
                               font-size: 14px;
                               vertical-align: top;
+                              font-weight: bold;
                               margin: 0;
                               padding: 0 0 20px;
                             "
