@@ -44,6 +44,7 @@ export default function Edit() {
 
   const sendTicket = (type) => {
     appl.setLoading(true);
+    const windowReference = window.open();
     ordersApi
       .getTickets({ order_id: data.order._id, type })
       .then(({ fileName }) => {
@@ -54,7 +55,6 @@ export default function Edit() {
             title: "Успешно отправлено!",
             ob: true,
           });
-        const windowReference = window.open();
         windowReference.location = "/api/assets/tickets/" + fileName;
       })
       .catch((err) => {

@@ -27,6 +27,8 @@ async function init() {
     password: await bcrypt.hash("1703", 10),
   });
 
+  await user.save();
+
   await Config.insertMany([
     { key: "pay_types.currency", name: "Валюта", value: "₽", group: "Типы оплат" },
     { key: "pay_types.transfer.card_number", name: "Номер карты для перевода", value: "", group: "Типы оплат" },
