@@ -8,7 +8,7 @@ const cancelBlankOrders = async () => {
       status: "blank",
       created_date: {
         $lte: new Date(
-          new Date().setMinutes(new Date().setMinutes() - config.value)
+          new Date().setMinutes(new Date().setMinutes() - Number(config.value))
         ),
       },
     },

@@ -10,7 +10,7 @@ const cancelBookedOrder = async () => {
   const orders = await Order.find({
     status: "booked",
     created_date: {
-      $lte:  new Date(new Date().setHours(new Date().getHours() - config.value)),
+      $lte:  new Date(new Date().setHours(new Date().getHours() - Number(config.value))),
     },
   });
 
@@ -30,7 +30,7 @@ const cancelBookedOrder = async () => {
     {
       status: "booked",
       created_date: {
-        $lte:  new Date(new Date().setHours(new Date().getHours() - config.value)),
+        $lte:  new Date(new Date().setHours(new Date().getHours() - Number(config.value))),
     },
     },
     { status: "canceled" }
