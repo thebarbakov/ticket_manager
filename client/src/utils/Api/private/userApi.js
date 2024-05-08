@@ -92,7 +92,7 @@ class UserApi extends ApiPrivate {
   }
 
   editMe({ first_name, second_name, login, email, password }) {
-    return fetch(this._baseURL + "users/", {
+    return fetch(this._baseURL + "users/me", {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",

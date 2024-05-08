@@ -20,6 +20,7 @@ const generateTicket = require("../../utils/generateTicket");
 const sendTicket = require("../../utils/mail/sendTicket");
 const PlacesTariff = require("../../models/PlacesTariff");
 const NotFoundError = require("../../errors/NotFound");
+const sendOrderConfirmed = require("../../utils/mail/sendOrderConfirmed");
 
 const { SYSTEM_URL } = process.env;
 
@@ -279,6 +280,7 @@ const createOrder = async (req, res, next) => {
 
     return res.status(200).json(result);
   } catch (e) {
+    console.log(e)
     return next(e);
   }
 };
