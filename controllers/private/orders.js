@@ -517,7 +517,7 @@ const getReport = async (req, res, next) => {
       });
     }
 
-    const filter = {};
+    const filter = { status: { $ne: "canceled" } };
     if (req.query.event_id !== undefined) {
       filter.event_id = req.query.event_id;
     }
