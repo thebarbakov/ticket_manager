@@ -51,6 +51,13 @@ export default function List() {
     //   isSubSubtitle: false,
     // },
     {
+      field: "number",
+      displayName: "№",
+      type: "number",
+      isFilter: true,
+      inputType: "number",
+    },
+    {
       field: "event_id",
       displayName: "Мероприятие",
       type: "select",

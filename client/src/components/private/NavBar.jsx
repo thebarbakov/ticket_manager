@@ -33,6 +33,9 @@ export default function NavBar() {
                 <NavDropdown.Item eventKey="/adm/orders/list">
                   Заказы
                 </NavDropdown.Item>
+                <NavDropdown.Item eventKey="/adm/orders/orders_scheme">
+                  Схема заказов
+                </NavDropdown.Item>
                 <NavDropdown.Item eventKey="/adm/orders/report">
                   Отчет по продажам
                 </NavDropdown.Item>

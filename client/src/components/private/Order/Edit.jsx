@@ -44,7 +44,7 @@ export default function Edit() {
 
   const sendTicket = (type) => {
     appl.setLoading(true);
-    const windowReference = window.open();
+    if (type !== "email") var windowReference = window.open();
     ordersApi
       .getTickets({ order_id: data.order._id, type })
       .then(({ fileName }) => {
@@ -134,6 +134,22 @@ export default function Edit() {
           Назад
         </Button>
         <Form>
+          <Card className="mt-3 mb-3">
+            <Card.Body>
+              <p>
+                Клиент:{" "}
+                <strong>
+                  {data.order.agent.second_name} {data.order.agent.first_name}
+                </strong>
+              </p>
+              <p>
+                {data.order.agent.email}{" | "}
+                <a href={"tel:" + data.order.agent.phone}>
+                  {data.order.agent.phone}
+                </a>
+              </p>
+            </Card.Body>
+          </Card>
           <p>
             Мероприятие: <strong>{data.order.event?.name}</strong> |{" "}
             {new Date(data.order.event?.date).toLocaleDateString("ru-RU", {

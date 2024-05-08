@@ -19,6 +19,7 @@ const sendOrderChangeStatus = require("../../utils/mail/sendOrderChangeStatus");
 const generateTicket = require("../../utils/generateTicket");
 const sendTicket = require("../../utils/mail/sendTicket");
 const PlacesTariff = require("../../models/PlacesTariff");
+const NotFoundError = require("../../errors/NotFound");
 
 const { SYSTEM_URL } = process.env;
 
@@ -173,9 +174,10 @@ const getOrder = async (req, res, next) => {
         });
       }
     }
+    const agent = await Agent.findOne({ _id: order._doc.agent_id });
 
     return res.status(200).json({
-      order: { ...order._doc, event, pay_type, hall },
+      order: { ...order._doc, event, pay_type, hall, agent },
       places: placesResult,
     });
   } catch (e) {
@@ -218,6 +220,24 @@ const getCreatonOrderInfo = async (req, res, next) => {
     });
 
     return res.status(200).json({ event, pay_types, agents, hall_scheme });
+  } catch (e) {
+    return next(e);
+  }
+};
+
+const getOrdersFromEvent = async (req, res, next) => {
+  try {
+    if (req.user.access.orders !== true)
+      return next(new ForbiddenError("Недостаточно прав"));
+
+    const event = await Event.findOne({ _id: req.params.event_id });
+
+    const hall_scheme = await getHallEventScheme({
+      show_order: 1,
+      event_id: event._id,
+    });
+
+    return res.status(200).json({ event, ...hall_scheme });
   } catch (e) {
     return next(e);
   }
@@ -417,9 +437,10 @@ const updateOrder = async (req, res, next) => {
         });
       }
     }
+    const agent = await Agent.findOne({ _id: order._doc.agent_id });
 
     return res.status(200).json({
-      order: { ...order._doc, event, pay_type, hall },
+      order: { ...order._doc, event, pay_type, hall, agent },
       places: placesResult,
     });
   } catch (e) {
@@ -484,6 +505,86 @@ const getTickets = async (req, res, next) => {
   }
 };
 
+const getReport = async (req, res, next) => {
+  try {
+    if (req.user.access.orders !== true)
+      return next(new ForbiddenError("Недостаточно прав"));
+
+    if (!req.query.event_id) {
+      const events = await Event.find({});
+      return res.status(200).json({
+        events,
+      });
+    }
+
+    const filter = {};
+    if (req.query.event_id !== undefined) {
+      filter.event_id = req.query.event_id;
+    }
+    if (
+      (req.query.f_created_date !== undefined) &
+      (req.query.t_created_date !== undefined)
+    ) {
+      filter.date = {
+        $gte: todayFrom(req.query.created_date),
+        $lt: todayTo(req.query.created_date),
+      };
+    }
+    if (
+      (req.query.f_created_date === undefined) &
+      (req.query.t_created_date !== undefined)
+    ) {
+      filter.date = { $lt: todayTo(req.query.created_date) };
+    }
+    if (
+      (req.query.f_created_date !== undefined) &
+      (req.query.t_created_date === undefined)
+    ) {
+      filter.date = { $gte: todayFrom(req.query.created_date) };
+    }
+
+    const orders = await Order.find(filter);
+
+    const pay_types = await PayType.find({});
+
+    const report = [];
+    pay_types.forEach((payType) => {
+      report.push({
+        ...payType._doc,
+        total: 0,
+        summa_payed: 0,
+        summa_not_payed: 0,
+        summa_total: 0,
+      });
+    });
+
+    orders.forEach((order) => {
+      if (!order.pay_type_id) return;
+      if (order.is_payed)
+        report.find(
+          (el) => String(el._id) === String(order.pay_type_id)
+        ).summa_payed += order.total_sum;
+      else
+        report.find(
+          (el) => String(el._id) === String(order.pay_type_id)
+        ).summa_not_payed += order.total_sum;
+      report.find(
+        (el) => String(el._id) === String(order.pay_type_id)
+      ).summa_total += order.total_sum;
+      report.find(
+        (el) => String(el._id) === String(order.pay_type_id)
+      ).total += 1;
+    });
+
+    return res.status(200).json({
+      report,
+    });
+  } catch (e) {
+    console.log(e);
+    return next(e);
+  }
+};
+
 module.exports = {
   getOrders,
   getOrder,
@@ -492,4 +593,6 @@ module.exports = {
   createOrder,
   getCreatonOrderInfo,
   getTickets,
+  getOrdersFromEvent,
+  getReport,
 };

@@ -10,9 +10,13 @@ const {
   createOrder,
   getCreatonOrderInfo,
   getTickets,
+  getOrdersFromEvent,
+  getReport
 } = require("../../controllers/private/orders");
 
 router.get("/", getOrders);
+
+router.get("/report", getReport);
 
 router.post(
   "/",
@@ -56,6 +60,7 @@ router.patch(
 router.get("/events_info", getEventsInfo);
 router.get("/tickets", getTickets);
 router.get("/creation_info/:event_id", getCreatonOrderInfo);
+router.get("/scheme_orders/:event_id", getOrdersFromEvent);
 
 router.get("/:id", getOrder);
 

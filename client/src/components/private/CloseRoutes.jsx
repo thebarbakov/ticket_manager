@@ -11,6 +11,8 @@ import User from "./User/User";
 import Me from "./User/Me";
 import Dashboard from "./Dashboard";
 import Config from "./Config";
+import Scheme from "./Order/Scheme";
+import Report from "./Order/Report";
 
 export default function CloseRoutes({ getMe, signOut }) {
   return (
@@ -22,6 +24,8 @@ export default function CloseRoutes({ getMe, signOut }) {
       <Route path="/tariffs/*" element={<Tariffs />} />
       <Route path="/discounts/*" element={<Discount />} />
       <Route path="/places_tariffs/*" element={<PlacesTariffs />} />
+      <Route path="/orders/orders_scheme" element={<Scheme />} />
+      <Route path="/orders/report" element={<Report />} />
       <Route path="/orders/*" element={<Order />} />
       <Route path="/users/*" element={<User />} />
       <Route path="/config" element={<Config />} />

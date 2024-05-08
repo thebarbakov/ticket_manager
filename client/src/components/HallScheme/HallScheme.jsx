@@ -54,6 +54,7 @@ export default function HallScheme({
   setSelectedPlaces,
   color,
   service,
+  ordersScheme
 }) {
   const [scheme, setScheme] = useState(null);
   const [size, setSize] = useState({});
@@ -125,7 +126,8 @@ export default function HallScheme({
                     }
                     onTouchStart={() => {
                       if (!setSelectedPlaces) return;
-                      if (place.is_booked) return;
+                      if (place.is_booked & !ordersScheme) return;
+                      if (ordersScheme === true && !place.is_booked ) return;
                       if ((place.tariff === null) & !Boolean(service)) return;
                       if (selectedPlace.includes(place._id))
                         setSelectedPlaces(
@@ -135,7 +137,8 @@ export default function HallScheme({
                     }}
                     onClick={() => {
                       if (!setSelectedPlaces) return;
-                      if (place.is_booked) return;
+                      if (place.is_booked & !ordersScheme) return;
+                      if (ordersScheme === true && !place.is_booked ) return;
                       if ((place.tariff === null) & !Boolean(service)) return;
                       if (selectedPlace.includes(place._id))
                         setSelectedPlaces(

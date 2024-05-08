@@ -10,6 +10,15 @@ class OrdersApi extends ApiPrivate {
     }).then((res) => this._checkResponse(res));
   }
 
+  getReport(params) {
+    return fetch(this._baseURL + "orders/report" + this._queryString(params), {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }).then((res) => this._checkResponse(res));
+  }
+
   getOrder(order_id) {
     return fetch(this._baseURL + "orders/" + order_id, {
       method: "GET",
@@ -87,6 +96,15 @@ class OrdersApi extends ApiPrivate {
 
   preCreateOrder(event_id) {
     return fetch(this._baseURL + "orders/creation_info/" + event_id, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }).then((res) => this._checkResponse(res));
+  }
+
+  getSchemeOrders(event_id) {
+    return fetch(this._baseURL + "orders/scheme_orders/" + event_id, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

@@ -13,6 +13,7 @@ const cron = require("./utils/cron")
 const errorHandler = require("./errors/ServerError");
 
 const { requestLogger, errorLogger } = require("./middlewares/logger");
+const sendOrderConfirmed = require("./utils/mail/sendOrderConfirmed");
 
 const { PORT = 3002 } = process.env;
 
@@ -64,6 +65,7 @@ app.use(requestLogger);
 app.use(require("./utils/rateLimits"));
 
 (async () => await init())();
+// (async () => await sendOrderConfirmed({order_id: "663b8ff2325e0c1b0928926c"}))();
 
 app.use(helmet());
 
