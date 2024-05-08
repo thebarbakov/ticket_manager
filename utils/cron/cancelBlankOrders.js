@@ -3,7 +3,7 @@ const Order = require("../../models/Order");
 
 const cancelBlankOrders = async () => {
   try {
-    const config = await Config.findOne({ key: "orders.cancel_after_booked" });
+    const config = await Config.findOne({ key: "orders.cancel_after_blank" });
     await Order.updateMany(
       {
         status: "blank",

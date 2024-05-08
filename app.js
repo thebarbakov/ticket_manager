@@ -62,6 +62,7 @@ app.use((req, res, next) => {
 app.use(requestLogger);
 
 app.use(require("./utils/rateLimits"));
+
 (async () => await init())();
 
 app.use(helmet());
