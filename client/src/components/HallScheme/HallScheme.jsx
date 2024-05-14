@@ -54,7 +54,7 @@ export default function HallScheme({
   setSelectedPlaces,
   color,
   service,
-  ordersScheme
+  ordersScheme,
 }) {
   const [scheme, setScheme] = useState(null);
   const [size, setSize] = useState({});
@@ -112,7 +112,11 @@ export default function HallScheme({
                     y={Number(place.coordinate.cy)}
                     radius={Number(place.coordinate.r)}
                     fill={
-                      place.is_booked
+                      place?.order.is_scanned
+                        ? place?.order.is_entered
+                          ? "#FF0000"
+                          : "#FFFF00"
+                        : place.is_booked
                         ? "#3b3b3b"
                         : selectedPlace
                         ? selectedPlace.includes(place._id)
@@ -127,7 +131,7 @@ export default function HallScheme({
                     onTouchStart={() => {
                       if (!setSelectedPlaces) return;
                       if (place.is_booked & !ordersScheme) return;
-                      if (ordersScheme === true && !place.is_booked ) return;
+                      if (ordersScheme === true && !place.is_booked) return;
                       if ((place.tariff === null) & !Boolean(service)) return;
                       if (selectedPlace.includes(place._id))
                         setSelectedPlaces(
@@ -138,7 +142,7 @@ export default function HallScheme({
                     onClick={() => {
                       if (!setSelectedPlaces) return;
                       if (place.is_booked & !ordersScheme) return;
-                      if (ordersScheme === true && !place.is_booked ) return;
+                      if (ordersScheme === true && !place.is_booked) return;
                       if ((place.tariff === null) & !Boolean(service)) return;
                       if (selectedPlace.includes(place._id))
                         setSelectedPlaces(
