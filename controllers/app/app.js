@@ -13,6 +13,7 @@ const Hall = require("../../models/Hall");
 const Discount = require("../../models/Discount");
 const Place = require("../../models/Place");
 const Agent = require("../../models/Agent");
+const Config = require("../../models/Config");
 
 const { JWT_SECRET } = process.env;
 
@@ -104,6 +105,19 @@ const checkTicket = async (req, res, next) => {
 
     if (order_place.status === status)
       return next(new CastError("Билет уже в этом статусе"));
+
+    const config = await Config.findOne({ key: "events.scan_until" });
+    const event = await Event.findOne({ _id: order.event_id });
+
+    if (
+      new Date() <
+      new Date(
+        new Date(event.date).setMinutes(
+          new Date(event.date).getMinutes() - config.value
+        )
+      )
+    )
+      return next(new CastError("Сканирование пока запрещено"));
 
     await OrderPlaces.updateOne(
       {
