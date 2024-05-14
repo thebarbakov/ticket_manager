@@ -65,7 +65,7 @@ app.use(requestLogger);
 app.use(require("./utils/rateLimits"));
 
 (async () => await init())();
-// (async () => await sendOrderConfirmed({order_id: "663b8ff2325e0c1b0928926c"}))();
+// (async () => await sendOrderConfirmed({order_id: "66430e32ae40eb0995b2ef79"}))();
 
 app.use(helmet());
 

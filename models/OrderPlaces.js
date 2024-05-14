@@ -26,6 +26,7 @@ const orderPlacesSchema = new Schema({
   email: { type: String },
 
   is_scanned: { type: Boolean, required: true, default: false },
+  is_entered: { type: Boolean, required: true, default: false },
 });
 
 module.exports = model("OrderPlaces", orderPlacesSchema);

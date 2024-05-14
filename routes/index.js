@@ -13,6 +13,7 @@ router.use(
 );
 router.use("/public", require("./public/index.js"));
 router.use(require("./tickets.js"));
+router.use("/app", require("./app.js"));
 router.use("/private", require("./private/index.js"));
 
 router.all("*", (req, res, next) => {
