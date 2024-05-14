@@ -112,8 +112,8 @@ export default function HallScheme({
                     y={Number(place.coordinate.cy)}
                     radius={Number(place.coordinate.r)}
                     fill={
-                      place?.order.is_scanned
-                        ? place?.order.is_entered
+                      place?.order?.is_scanned
+                        ? place?.order?.is_entered
                           ? "#FF0000"
                           : "#FFFF00"
                         : place.is_booked
