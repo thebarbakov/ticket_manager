@@ -11,7 +11,6 @@ const checkTicket = async (req, res, next) => {
   try {
     if (!req.originalUrl.match(/\/api\/assets\/tickets\/(.*)\_.*\.pdf/)?.[1])
       return next();
-
     const { ticket_manager_user, ticket_manager_agent } = req.cookies;
     if (ticket_manager_user) {
       const { user_id } = jwt.verify(ticket_manager_user, JWT_SECRET);

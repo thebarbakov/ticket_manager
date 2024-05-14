@@ -64,15 +64,22 @@ const getOrder = async (req, res, next) => {
     const order_places = await OrderPlaces.find({
       order_id: order_place.order_id,
     });
-    order_places.place = await Place.findOne({ _id: order_places.place_id });
+    const place = await Place.findOne({ _id: order_place.place_id });
     const event = await Event.findOne({ _id: order.event_id });
     const hall = await Hall.findOne({ _ID: event.hall_id });
     const discount = await Discount.findOne({ _id: order.discount });
-    const agent = await Agent.findOne({_id: order.agent_id})
+    const agent = await Agent.findOne({ _id: order.agent_id });
 
     return res.status(200).json({
-      order_place,
-      order: { ...order, order_places, event, hall, discount_item: discount, agent },
+      order_place: { ...order_place._doc, place },
+      order: {
+        ...order._doc,
+        order_places,
+        event,
+        hall,
+        discount_item: discount,
+        agent,
+      },
     });
   } catch (e) {
     return next(e);
@@ -84,7 +91,7 @@ const checkTicket = async (req, res, next) => {
     if (req.user.access.scanner !== true)
       return next(new ForbiddenError("Недостаточно прав"));
 
-    const { ticket_id, status } = req.params.body;
+    const { ticket_id, status } = req.body;
 
     const order_place = await OrderPlaces.findOne({ _id: ticket_id });
     const order = await Order.findOne({
@@ -98,11 +105,12 @@ const checkTicket = async (req, res, next) => {
     if (order_place.status === status)
       return next(new CastError("Билет уже в этом статусе"));
 
-    await OrderPlaces.updateOne({
-      _id: ticket_id,
-      is_entered: status,
-      is_scanned: true,
-    });
+    await OrderPlaces.updateOne(
+      {
+        _id: ticket_id,
+      },
+      { is_entered: status, is_scanned: true }
+    );
 
     return res.status(200).json({ status: "ok!" });
   } catch (e) {

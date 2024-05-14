@@ -40,7 +40,7 @@ router.patch(
       first_name: Joi.string().min(2).max(30).required(),
       second_name: Joi.string().min(2).max(30).required(),
       email: Joi.string().required().email(),
-      login: Joi.string().required().email(),
+      login: Joi.string().required(),
       password: Joi.string(),
       access: Joi.required(),
       is_active: Joi.boolean().required(),
