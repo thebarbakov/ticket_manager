@@ -34,7 +34,11 @@ const getEvent = async (req, res, next) => {
   try {
     const { id } = req.params;
 
-    const event = await Event.findOne({ event_id: id });
+    const event = await Event.findOne({
+      event_id: id,
+      close_sales: { $gt: new Date() },
+      date: { $gt: new Date() },
+    });
 
     if (!event) return next(new NotFound("Мероприятие не найдено"));
 
